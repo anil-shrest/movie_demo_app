@@ -5,6 +5,7 @@ import 'package:movie_app/app/constants/urls.dart';
 import 'package:movie_app/app/extras/persistent_header.dart';
 import 'package:movie_app/app/models/movies_model.dart';
 import 'package:movie_app/app/notifiers/movies_provider.dart';
+import 'package:movie_app/app/screens/movie_details_page.dart';
 
 // Main home-page of the movie app
 class HomePage extends ConsumerStatefulWidget {
@@ -22,18 +23,21 @@ class _HomePageState extends ConsumerState<HomePage> {
     return Scaffold(
       body: SafeArea(
         child: movies.when(
-            data: (data) {
-              return CustomScrollView(
-                slivers: [
-                  const MovieAppBar(),
-                  const MovieSearchBar(),
-                  const MovieCategorySlider(),
-                  MoviesGridList(data: data),
-                ],
-              );
-            },
-            error: (e, stack) => Text(e.toString()),
-            loading: () => const Center(child: CircularProgressIndicator())),
+          data: (data) {
+            return CustomScrollView(
+              slivers: [
+                const MovieAppBar(),
+                const MovieSearchBar(),
+                const MovieCategorySlider(),
+                MoviesGridList(data: data),
+              ],
+            );
+          },
+          error: (e, stack) => Text(e.toString()),
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
       ),
     );
   }
@@ -57,66 +61,74 @@ class MoviesGridList extends ConsumerWidget {
         ),
         delegate: SliverChildBuilderDelegate(
           (context, index) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.black38,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  topRight: Radius.circular(8),
-                ),
-                image: DecorationImage(
-                  image: NetworkImage(
-                    data.data?.movies?[index].backgroundImage ??
-                        ApiUrls.imageNotFound,
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MovieDetailsPage(id: data.data!.movies![index].id.toString()),
                   ),
-                  fit: BoxFit.fill,
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    height: 40,
-                    alignment: Alignment.bottomLeft,
-                    color: Colors.black38,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                width: 120,
-                                child: Text(
-                                  data.data!.movies![index].title.toString(),
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                              Text(
-                                data.data!.movies![index].year.toString(),
-                              ),
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          padding: const EdgeInsets.only(
-                            bottom: 2,
-                            left: 4,
-                          ),
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.play_circle_outline_rounded,
-                            size: 30,
-                          ),
-                        ),
-                      ],
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black38,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
+                  image: DecorationImage(
+                    image: NetworkImage(
+                      data.data?.movies?[index].mediumCoverImage ?? ApiUrls.imageNotFound,
                     ),
+                    fit: BoxFit.fill,
                   ),
-                ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      height: 40,
+                      alignment: Alignment.bottomLeft,
+                      color: Color.fromARGB(255, 85, 156, 102),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: 120,
+                                  child: Text(
+                                    data.data!.movies![index].title.toString(),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                Text(
+                                  data.data!.movies![index].year.toString(),
+                                ),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            padding: const EdgeInsets.only(
+                              bottom: 2,
+                              left: 4,
+                            ),
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.play_circle_outline_rounded,
+                              size: 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -151,10 +163,7 @@ class MovieCategorySlider extends ConsumerWidget {
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
-                      border: Border.all(
-                          color: moviesNotifier.selectedCategoryIndex == index
-                              ? Colors.lightGreen
-                              : Colors.grey)),
+                      border: Border.all(color: moviesNotifier.selectedCategoryIndex == index ? Colors.lightGreen : Colors.grey)),
                   margin: const EdgeInsets.symmetric(horizontal: 6),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -165,9 +174,7 @@ class MovieCategorySlider extends ConsumerWidget {
                           fontSize: 14,
                           letterSpacing: 0.2,
                           fontWeight: FontWeight.w500,
-                          color: moviesNotifier.selectedCategoryIndex == index
-                              ? Colors.lightGreen
-                              : Colors.white,
+                          color: moviesNotifier.selectedCategoryIndex == index ? Colors.lightGreen : Colors.white,
                         ),
                       ),
                     ),
@@ -213,12 +220,8 @@ class MovieSearchBar extends StatelessWidget {
               size: 21,
               color: Colors.lightGreen,
             ),
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.lightGreen)),
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.lightGreen)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.lightGreen)),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Colors.lightGreen)),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: Colors.white),
@@ -241,12 +244,9 @@ class MovieAppBar extends StatelessWidget {
     return SliverAppBar(
       title: const Text('Movie App'),
       elevation: 0,
+      floating: true,
       actions: [
-        IconButton(
-            iconSize: 28,
-            splashRadius: 28,
-            onPressed: () {},
-            icon: const Icon(Icons.blur_circular)),
+        IconButton(iconSize: 28, splashRadius: 28, onPressed: () {}, icon: const Icon(Icons.blur_circular)),
       ],
     );
   }

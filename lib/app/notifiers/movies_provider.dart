@@ -14,6 +14,9 @@ class MoviesNotifier extends ChangeNotifier {
     getAllMoviesList();
   }
 
+  // movie services instance
+  final _movieServices = MovieServices();
+
   // movie category slider
   int _selectedCategoryIndex = 0;
 
@@ -25,14 +28,11 @@ class MoviesNotifier extends ChangeNotifier {
   }
 
   // movies list
-  final _movieServices = MovieServices();
-
   AsyncValue<MoviesModel> movieList = const AsyncLoading();
 
   void getAllMoviesList() async {
     try {
-      final movieResponse =
-          await _movieServices.fetchMovieList('list_movies.json?limit=3');
+      final movieResponse = await _movieServices.fetchMovieList('list_movies.json?limit=10');
       final newResponse = MoviesModel.fromJson(movieResponse);
       movieList = AsyncValue.data(newResponse);
     } catch (e) {

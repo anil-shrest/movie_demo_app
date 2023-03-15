@@ -15,4 +15,10 @@ class MovieServices {
     var response = await _dio.get(type);
     return response.data;
   }
+
+  // fetching a single movie details
+  fetchMovieDetails(String movieId) async {
+    var response = await _dio.get('movie_details.json?movie_id=$movieId');
+    return response.data;
+  }
 }
