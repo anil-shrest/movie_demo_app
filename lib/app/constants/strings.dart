@@ -1,13 +1,13 @@
 // movies category list
 List<String> category = [
-  'All Movies',
-  '3D Movies',
-  'Top Seeds',
-  'Upcoming',
+  'All',
+  '3D',
+  'Horror',
+  'Comedy',
   'Action',
 ];
 
-enum MovieCategoryOption { allMovies, threeDMovie, topSeeds, upcoming }
+enum MovieCategoryOption { allMovies, threeDMovie, horror, action, comedy, drama }
 
 extension Type on MovieCategoryOption {
   String get movieCategoryType {
@@ -18,11 +18,17 @@ extension Type on MovieCategoryOption {
       case MovieCategoryOption.threeDMovie:
         return '3D Movies';
 
-      case MovieCategoryOption.topSeeds:
-        return 'Top Seeds';
+      case MovieCategoryOption.horror:
+        return 'Horror';
 
-      case MovieCategoryOption.upcoming:
-        return 'Upcoming';
+      case MovieCategoryOption.action:
+        return 'Action';
+
+      case MovieCategoryOption.comedy:
+        return 'Comedy';
+
+      case MovieCategoryOption.drama:
+        return 'Drama';
 
       default:
         return 'All Movies';

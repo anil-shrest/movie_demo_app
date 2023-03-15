@@ -32,7 +32,23 @@ class MoviesNotifier extends ChangeNotifier {
 
   void getAllMoviesList() async {
     try {
-      final movieResponse = await _movieServices.fetchMovieList('list_movies.json?limit=10');
+      String reqUrl = 'list_movies.json?limit=10';
+      if (selectedCategoryIndex == 0) {
+        reqUrl = 'list_movies.json?limit=10';
+      } else if (selectedCategoryIndex == 1) {
+        reqUrl = 'list_movies.json?quality=3D';
+        notifyListeners();
+      } else if (selectedCategoryIndex == 2) {
+        reqUrl = 'list_movies.json?genre=horror&limit=10';
+        notifyListeners();
+      } else if (selectedCategoryIndex == 3) {
+        reqUrl = 'list_movies.json?genre=action&limit=10';
+        notifyListeners();
+      } else if (selectedCategoryIndex == 4) {
+        reqUrl = 'list_movies.json?genre=Comedy&limit=10';
+        notifyListeners();
+      }
+      final movieResponse = await _movieServices.fetchMovieList(reqUrl);
       final newResponse = MoviesModel.fromJson(movieResponse);
       movieList = AsyncValue.data(newResponse);
     } catch (e) {

@@ -159,7 +159,12 @@ class MovieCategorySlider extends ConsumerWidget {
             itemCount: MovieCategoryOption.values.length,
             itemBuilder: (context, index) {
               return GestureDetector(
-                onTap: () => moviesNotifier.selectedCategoryIndex = index,
+                onTap: moviesNotifier.selectedCategoryIndex == index
+                    ? () {}
+                    : () {
+                        moviesNotifier.selectedCategoryIndex = index;
+                        moviesNotifier.getAllMoviesList();
+                      },
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
