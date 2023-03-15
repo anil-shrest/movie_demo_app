@@ -20,7 +20,6 @@ class MovieDetailsPage extends ConsumerWidget {
               return Stack(
                 children: [
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ShaderMask(
                         shaderCallback: (rect) {
@@ -40,59 +39,116 @@ class MovieDetailsPage extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.star, color: Colors.amber),
-                              Text(
-                                ' |  ${data.data!.movie!.downloadCount}',
-                                style: TextStyle(fontSize: 14),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.star, color: Colors.amber),
+                                    Text(
+                                      ' |  ${data.data!.movie!.downloadCount}',
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      splashRadius: 20,
+                                      onPressed: () {},
+                                      icon: const Icon(Icons.favorite_border),
+                                    ),
+                                    IconButton(
+                                      splashRadius: 20,
+                                      onPressed: () {},
+                                      icon: const Icon(Icons.share_outlined),
+                                    ),
+                                    IconButton(
+                                      splashRadius: 20,
+                                      onPressed: () {},
+                                      icon: const Icon(Icons.bookmark_border),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5),
+                              child: Text(
+                                data.data!.movie!.title!,
+                                style: const TextStyle(
+                                  fontSize: 25,
+                                  letterSpacing: 0.3,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              IconButton(
-                                splashRadius: 20,
-                                onPressed: () {},
-                                icon: const Icon(Icons.favorite_border),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 7),
+                              child: Text(
+                                '${data.data!.movie!.runtime} hr • ${data.data!.movie!.genres} • ${data.data!.movie!.year}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  letterSpacing: 0.3,
+                                ),
                               ),
-                              IconButton(
-                                splashRadius: 20,
-                                onPressed: () {},
-                                icon: const Icon(Icons.share_outlined),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: Text(
+                                data.data!.movie!.descriptionFull!,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  letterSpacing: 0.3,
+                                ),
                               ),
-                              IconButton(
-                                splashRadius: 20,
-                                onPressed: () {},
-                                icon: const Icon(Icons.bookmark_border),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 22),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 200,
+                                  height: 50,
+                                  child: OutlinedButton.icon(
+                                    style: OutlinedButton.styleFrom(
+                                      shape: const StadiumBorder(),
+                                      backgroundColor: Colors.white12,
+                                      side: const BorderSide(
+                                        width: 1,
+                                        color: Colors.lightGreen,
+                                      ),
+                                    ),
+                                    onPressed: () {},
+                                    icon: const Icon(
+                                      Icons.play_arrow_outlined,
+                                      color: Colors.lightGreen,
+                                      size: 30,
+                                    ),
+                                    label: const Text('Watch Now',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          letterSpacing: 0.3,
+                                          color: Colors.lightGreen,
+                                          fontWeight: FontWeight.w600,
+                                        )),
+                                  ),
+                                ),
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Text(
-                        data.data!.movie!.title!,
-                        style: const TextStyle(
-                          fontSize: 25,
-                          letterSpacing: 0.2,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        '${data.data!.movie!.runtime} • ${data.data!.movie!.genres} • ${data.data!.movie!.year}',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          letterSpacing: 0.2,
-                        ),
-                      ),
-                      Text(
-                        data.data!.movie!.descriptionFull!,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          letterSpacing: 0.2,
+                            ),
+                            const Text(
+                              'Similar Movies',
+                              style: TextStyle(
+                                fontSize: 18,
+                                letterSpacing: 0.3,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
