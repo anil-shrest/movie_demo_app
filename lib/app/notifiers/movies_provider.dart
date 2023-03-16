@@ -33,7 +33,9 @@ class MoviesNotifier extends ChangeNotifier {
 
   void getAllMoviesList() async {
     try {
-      final movieResponse = await _movieServices.fetchMovieList(MovieCategoryOption.values[selectedCategoryIndex].categoryUrl);
+      final movieResponse = await _movieServices.fetchMovieList(isDescendingOrder == true
+          ? '${MovieCategoryOption.values[selectedCategoryIndex].categoryUrl}&order_by=desc'
+          : '${MovieCategoryOption.values[selectedCategoryIndex].categoryUrl}&order_by=asc');
       final newResponse = MoviesModel.fromJson(movieResponse);
       movieList = AsyncValue.data(newResponse);
     } catch (e) {
@@ -43,7 +45,7 @@ class MoviesNotifier extends ChangeNotifier {
   }
 
   // movie sort
-  bool _isDescendingOrder = false;
+  bool _isDescendingOrder = true;
 
   bool get isDescendingOrder => _isDescendingOrder;
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_app/app/notifiers/movie_details_provider.dart';
+import 'package:movie_app/app/screens/movie_details_page.dart';
 
 // movie suggestions card
 class MovieSuggestionWidget extends ConsumerWidget {
@@ -33,30 +34,38 @@ class MovieSuggestionWidget extends ConsumerWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: data.data!.movies!.length,
                 itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                            image: NetworkImage(data.data!.movies![index].mediumCoverImage!),
-                            fit: BoxFit.fill,
+                  return GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MovieDetailsPage(id: data.data!.movies![index].id.toString()),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: NetworkImage(data.data!.movies![index].mediumCoverImage!),
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          child: const SizedBox(
+                            height: 120,
+                            width: 100,
                           ),
                         ),
-                        child: const SizedBox(
-                          height: 120,
-                          width: 100,
+                        SizedBox(
+                          width: 110,
+                          child: Text(
+                            data.data!.movies![index].title!,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 110,
-                        child: Text(
-                          data.data!.movies![index].title!,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 },
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_app/app/models/movie_details_model.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart' as bh;
 import 'package:movie_app/app/notifiers/movie_details_provider.dart';
 import 'package:movie_app/app/widgets/movie_suggestion_card.dart';
 
@@ -200,7 +201,7 @@ class MovieInteractionWidget extends StatelessWidget {
 }
 
 // movie background image widget
-class BackgroundImageWidget extends StatelessWidget {
+class BackgroundImageWidget extends ConsumerWidget {
   const BackgroundImageWidget({
     super.key,
     required this.data,
@@ -208,7 +209,9 @@ class BackgroundImageWidget extends StatelessWidget {
   final MovieDetailsModel data;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final movie = ref.watch(movieDetailsNotifierProvider(data.data!.movie!.id.toString()));
+
     return ShaderMask(
       shaderCallback: (rect) {
         return const LinearGradient(
@@ -220,12 +223,24 @@ class BackgroundImageWidget extends StatelessWidget {
       blendMode: BlendMode.darken,
       child: SizedBox(
         height: 380,
-        width: double.infinity,
-        child: Image.network(
-          data.data!.movie!.largeCoverImage!,
-          fit: BoxFit.fill,
+        child: Center(
+          child: bh.BlurHash(
+            imageFit: BoxFit.fitWidth,
+            duration: const Duration(seconds: 3),
+            curve: Curves.easeIn,
+            hash: movie.decodedBlurHash,
+            image: data.data!.movie!.largeCoverImage,
+          ),
         ),
       ),
     );
+    //  SizedBox(
+    //   height: 380,
+    //   width: double.infinity,
+    //   child: Image.network(
+    //     data.data!.movie!.largeCoverImage!,
+    //     fit: BoxFit.fill,
+    //   ),
+    // ),
   }
 }

@@ -39,6 +39,116 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         ),
       ),
+      floatingActionButton: const FloatingButton(),
+    );
+  }
+}
+
+// floating action button for filter options
+class FloatingButton extends StatefulWidget {
+  const FloatingButton({
+    super.key,
+  });
+
+  @override
+  State<FloatingButton> createState() => _FloatingButtonState();
+}
+
+class _FloatingButtonState extends State<FloatingButton> {
+  FilterOptions? _character = FilterOptions.Date;
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      backgroundColor: Colors.lightGreen,
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return BottomSheet(
+              onClosing: () {},
+              builder: (BuildContext context) {
+                bool b = false;
+                return StatefulBuilder(
+                  builder: (BuildContext context, setState) {
+                    return SizedBox(
+                      height: 300,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 18,
+                            ),
+                            child: Text(
+                              'Filter Options:',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                letterSpacing: 0.3,
+                              ),
+                            ),
+                          ),
+                          Column(
+                            children: <Widget>[
+                              RadioListTile<FilterOptions>(
+                                title: Text(FilterOptions.Date.name),
+                                value: FilterOptions.Date,
+                                groupValue: _character,
+                                onChanged: (FilterOptions? value) {
+                                  setState(() {
+                                    _character = value;
+                                  });
+                                },
+                              ),
+                              RadioListTile<FilterOptions>(
+                                title: Text(FilterOptions.Title.name),
+                                value: FilterOptions.Title,
+                                groupValue: _character,
+                                onChanged: (FilterOptions? value) {
+                                  setState(() {
+                                    _character = value;
+                                  });
+                                },
+                              ),
+                              RadioListTile<FilterOptions>(
+                                title: Text(FilterOptions.Rating.name),
+                                value: FilterOptions.Rating,
+                                groupValue: _character,
+                                onChanged: (FilterOptions? value) {
+                                  setState(() {
+                                    _character = value;
+                                  });
+                                },
+                              ),
+                              RadioListTile<FilterOptions>(
+                                title: Text(FilterOptions.Download.name),
+                                value: FilterOptions.Download,
+                                groupValue: _character,
+                                onChanged: (FilterOptions? value) {
+                                  setState(() {
+                                    _character = value;
+                                  });
+                                },
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
+      child: const Icon(
+        Icons.filter_list_alt,
+        color: Colors.white,
+      ),
     );
   }
 }
@@ -260,7 +370,7 @@ class MovieAppBar extends ConsumerWidget {
             movies.isDescendingOrder = !movies.isDescendingOrder;
             movies.getAllMoviesList();
           },
-          icon: movies.isDescendingOrder ? const RotatedBox(quarterTurns: 2, child: Icon(Icons.sort_rounded)) : const Icon(Icons.sort_rounded),
+          icon: !movies.isDescendingOrder ? const RotatedBox(quarterTurns: 2, child: Icon(Icons.sort_rounded)) : const Icon(Icons.sort_rounded),
         ),
       ],
     );

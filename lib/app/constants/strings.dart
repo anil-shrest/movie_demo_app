@@ -7,6 +7,8 @@ List<String> category = [
   'Action',
 ];
 
+enum FilterOptions { Date, Title, Rating, Download }
+
 enum SortByOption { ascending, descending }
 
 extension SortType on SortByOption {
@@ -55,7 +57,7 @@ extension CategoryType on MovieCategoryOption {
         return 'list_movies.json?limit=10';
 
       case MovieCategoryOption.threeDMovie:
-        return 'list_movies.json?quality=3D';
+        return 'list_movies.json?quality=3D&limit=10';
 
       case MovieCategoryOption.horror:
         return 'list_movies.json?genre=horror&limit=10';
