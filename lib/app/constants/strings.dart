@@ -9,6 +9,24 @@ List<String> category = [
 
 enum FilterOptions { Date, Title, Rating, Download }
 
+extension FilterType on FilterOptions {
+  String get filterOptionType {
+    switch (this) {
+      case FilterOptions.Date:
+        return 'list_movies.json?sort_by=year';
+
+      case FilterOptions.Title:
+        return 'list_movies.json?sort_by=title';
+
+      case FilterOptions.Rating:
+        return 'list_movies.json?sort_by=rating';
+
+      case FilterOptions.Download:
+        return 'list_movies.json?sort_by=download';
+    }
+  }
+}
+
 enum SortByOption { ascending, descending }
 
 extension SortType on SortByOption {

@@ -126,7 +126,7 @@ class Movies {
     year = json['year'];
     rating = json['rating'];
     runtime = json['runtime'];
-    genres = json['genres'].cast<String>();
+    genres = json['genres'] == null? [] : List<String>.from(json["genres"].map((x) => x));
     summary = json['summary'];
     descriptionFull = json['description_full'];
     synopsis = json['synopsis'];

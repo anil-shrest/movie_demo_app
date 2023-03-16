@@ -5,6 +5,7 @@ import 'package:movie_app/app/constants/urls.dart';
 import 'package:movie_app/app/extras/persistent_header.dart';
 import 'package:movie_app/app/models/movies_model.dart';
 import 'package:movie_app/app/notifiers/movies_provider.dart';
+import 'package:movie_app/app/screens/filter_movie_page.dart';
 import 'package:movie_app/app/screens/movie_details_page.dart';
 
 // Main home-page of the movie app
@@ -18,7 +19,7 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final movies = ref.watch(moviesNotifierProvider).movieList;
+    final movies = ref.watch(moviesNotifierProvider(MovieCategoryOption.values.first.categoryUrl)).movieList;
 
     return Scaffold(
       body: SafeArea(
@@ -45,20 +46,20 @@ class _HomePageState extends ConsumerState<HomePage> {
 }
 
 // floating action button for filter options
-class FloatingButton extends StatefulWidget {
-  const FloatingButton({
-    super.key,
-  });
+class FloatingButton extends ConsumerStatefulWidget {
+  const FloatingButton({super.key});
 
   @override
-  State<FloatingButton> createState() => _FloatingButtonState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _FloatingButtonState();
 }
 
-class _FloatingButtonState extends State<FloatingButton> {
+class _FloatingButtonState extends ConsumerState<FloatingButton> {
   FilterOptions? _character = FilterOptions.Date;
 
   @override
   Widget build(BuildContext context) {
+    final movie = ref.watch(moviesNotifierProvider(MovieCategoryOption.values.first.categoryUrl));
+
     return FloatingActionButton(
       backgroundColor: Colors.lightGreen,
       onPressed: () {
@@ -68,7 +69,6 @@ class _FloatingButtonState extends State<FloatingButton> {
             return BottomSheet(
               onClosing: () {},
               builder: (BuildContext context) {
-                bool b = false;
                 return StatefulBuilder(
                   builder: (BuildContext context, setState) {
                     return SizedBox(
@@ -93,44 +93,27 @@ class _FloatingButtonState extends State<FloatingButton> {
                           ),
                           Column(
                             children: <Widget>[
-                              RadioListTile<FilterOptions>(
-                                title: Text(FilterOptions.Date.name),
-                                value: FilterOptions.Date,
-                                groupValue: _character,
-                                onChanged: (FilterOptions? value) {
-                                  setState(() {
-                                    _character = value;
-                                  });
-                                },
-                              ),
-                              RadioListTile<FilterOptions>(
-                                title: Text(FilterOptions.Title.name),
-                                value: FilterOptions.Title,
-                                groupValue: _character,
-                                onChanged: (FilterOptions? value) {
-                                  setState(() {
-                                    _character = value;
-                                  });
-                                },
-                              ),
-                              RadioListTile<FilterOptions>(
-                                title: Text(FilterOptions.Rating.name),
-                                value: FilterOptions.Rating,
-                                groupValue: _character,
-                                onChanged: (FilterOptions? value) {
-                                  setState(() {
-                                    _character = value;
-                                  });
-                                },
-                              ),
-                              RadioListTile<FilterOptions>(
-                                title: Text(FilterOptions.Download.name),
-                                value: FilterOptions.Download,
-                                groupValue: _character,
-                                onChanged: (FilterOptions? value) {
-                                  setState(() {
-                                    _character = value;
-                                  });
+                              ...FilterOptions.values.map(
+                                (FilterOptions v) {
+                                  return RadioListTile<FilterOptions>(
+                                    title: Text(v.name),
+                                    value: v,
+                                    groupValue: movie.filterType,
+                                    onChanged: (FilterOptions? value) {
+                                      movie.filterType = value!;
+                                      setState(() {});
+                                      Navigator.pop(context);
+
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => FilterMoviePage(
+                                            filterOption: value,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
                                 },
                               ),
                             ],
@@ -257,7 +240,7 @@ class MovieCategorySlider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final moviesNotifier = ref.watch(moviesNotifierProvider);
+    final moviesNotifier = ref.watch(moviesNotifierProvider(MovieCategoryOption.values.first.categoryUrl));
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -273,7 +256,7 @@ class MovieCategorySlider extends ConsumerWidget {
                     ? () {}
                     : () {
                         moviesNotifier.selectedCategoryIndex = index;
-                        moviesNotifier.getAllMoviesList();
+                        moviesNotifier.getAllMoviesList(MovieCategoryOption.values[moviesNotifier.selectedCategoryIndex].categoryUrl);
                       },
                 child: Container(
                   decoration: BoxDecoration(
@@ -356,7 +339,7 @@ class MovieAppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final movies = ref.watch(moviesNotifierProvider);
+    final movies = ref.watch(moviesNotifierProvider(MovieCategoryOption.values.first.categoryUrl));
 
     return SliverAppBar(
       title: const Text('Movie App'),
@@ -368,7 +351,9 @@ class MovieAppBar extends ConsumerWidget {
           splashRadius: 23,
           onPressed: () {
             movies.isDescendingOrder = !movies.isDescendingOrder;
-            movies.getAllMoviesList();
+            movies.getAllMoviesList(movies.isDescendingOrder == true
+                ? '${MovieCategoryOption.values[movies.selectedCategoryIndex].categoryUrl}&order_by=desc'
+                : '${MovieCategoryOption.values[movies.selectedCategoryIndex].categoryUrl}&order_by=asc');
           },
           icon: !movies.isDescendingOrder ? const RotatedBox(quarterTurns: 2, child: Icon(Icons.sort_rounded)) : const Icon(Icons.sort_rounded),
         ),
