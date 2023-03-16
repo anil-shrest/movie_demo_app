@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_app/app/models/movie_details_model.dart';
+import 'package:movie_app/app/models/movies_model.dart';
 import 'package:movie_app/app/services/movie_services.dart';
 
 // notifier initialize for global use
@@ -21,14 +22,28 @@ class MovieDetailNotifier extends ChangeNotifier {
 
   // movie details
   AsyncValue<MovieDetailsModel> movieDetails = const AsyncLoading();
+  AsyncValue<MoviesModel> movieSuggestions = const AsyncLoading();
 
   void getMovieDetails(String movieId) async {
     try {
-      final movieResponse = await _movieServices.fetchMovieDetails(movieId);
+      final movieResponse = await _movieServices.fetchMovieDetails('movie_details.json?movie_id=$movieId');
       final newResponse = MovieDetailsModel.fromJson(movieResponse);
       movieDetails = AsyncValue.data(newResponse);
+      getMovieSuggestions('movie_suggestions.json?movie_id=$movieId');
     } catch (e) {
       movieDetails = AsyncValue.error(e.toString(), StackTrace.current);
+    }
+    notifyListeners();
+  }
+
+  // movie suggestions
+  void getMovieSuggestions(String movieId) async {
+    try {
+      final movieResponse = await _movieServices.fetchMovieDetails(movieId);
+      final newResponse = MoviesModel.fromJson(movieResponse);
+      movieSuggestions = AsyncValue.data(newResponse);
+    } catch (e) {
+      movieSuggestions = AsyncValue.error(e.toString(), StackTrace.current);
     }
     notifyListeners();
   }

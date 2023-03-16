@@ -17,8 +17,8 @@ class MovieServices {
   }
 
   // fetching a single movie details
-  fetchMovieDetails(String movieId) async {
-    var response = await _dio.get('movie_details.json?movie_id=$movieId');
+  fetchMovieDetails(String url) async {
+    var response = await _dio.get(url);
     return response.data;
   }
 }

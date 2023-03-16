@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movie_app/app/constants/strings.dart';
 import 'package:movie_app/app/models/movies_model.dart';
 import 'package:movie_app/app/services/movie_services.dart';
 
@@ -32,28 +33,22 @@ class MoviesNotifier extends ChangeNotifier {
 
   void getAllMoviesList() async {
     try {
-      String reqUrl = 'list_movies.json?limit=10';
-      if (selectedCategoryIndex == 0) {
-        reqUrl = 'list_movies.json?limit=10';
-      } else if (selectedCategoryIndex == 1) {
-        reqUrl = 'list_movies.json?quality=3D';
-        notifyListeners();
-      } else if (selectedCategoryIndex == 2) {
-        reqUrl = 'list_movies.json?genre=horror&limit=10';
-        notifyListeners();
-      } else if (selectedCategoryIndex == 3) {
-        reqUrl = 'list_movies.json?genre=action&limit=10';
-        notifyListeners();
-      } else if (selectedCategoryIndex == 4) {
-        reqUrl = 'list_movies.json?genre=Comedy&limit=10';
-        notifyListeners();
-      }
-      final movieResponse = await _movieServices.fetchMovieList(reqUrl);
+      final movieResponse = await _movieServices.fetchMovieList(MovieCategoryOption.values[selectedCategoryIndex].categoryUrl);
       final newResponse = MoviesModel.fromJson(movieResponse);
       movieList = AsyncValue.data(newResponse);
     } catch (e) {
       movieList = AsyncValue.error(e.toString(), StackTrace.current);
     }
+    notifyListeners();
+  }
+
+  // movie sort
+  bool _isDescendingOrder = false;
+
+  bool get isDescendingOrder => _isDescendingOrder;
+
+  set isDescendingOrder(bool value) {
+    _isDescendingOrder = value;
     notifyListeners();
   }
 }

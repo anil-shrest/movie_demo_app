@@ -90,7 +90,7 @@ class MoviesGridList extends ConsumerWidget {
                     Container(
                       height: 40,
                       alignment: Alignment.bottomLeft,
-                      color: Color.fromARGB(255, 85, 156, 102),
+                      color: const Color.fromARGB(255, 85, 156, 102),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -239,19 +239,29 @@ class MovieSearchBar extends StatelessWidget {
 }
 
 // Movie main app-bar
-class MovieAppBar extends StatelessWidget {
+class MovieAppBar extends ConsumerWidget {
   const MovieAppBar({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final movies = ref.watch(moviesNotifierProvider);
+
     return SliverAppBar(
       title: const Text('Movie App'),
       elevation: 0,
       floating: true,
       actions: [
-        IconButton(iconSize: 28, splashRadius: 28, onPressed: () {}, icon: const Icon(Icons.blur_circular)),
+        IconButton(
+          iconSize: 28,
+          splashRadius: 23,
+          onPressed: () {
+            movies.isDescendingOrder = !movies.isDescendingOrder;
+            movies.getAllMoviesList();
+          },
+          icon: movies.isDescendingOrder ? const RotatedBox(quarterTurns: 2, child: Icon(Icons.sort_rounded)) : const Icon(Icons.sort_rounded),
+        ),
       ],
     );
   }

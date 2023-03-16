@@ -7,9 +7,26 @@ List<String> category = [
   'Action',
 ];
 
-enum MovieCategoryOption { allMovies, threeDMovie, horror, action, comedy, drama }
+enum SortByOption { ascending, descending }
 
-extension Type on MovieCategoryOption {
+extension SortType on SortByOption {
+  String get sortByOptionUrl {
+    switch (this) {
+      case SortByOption.ascending:
+        return 'list_movies.json?order_by=asc&limit=10';
+
+      case SortByOption.descending:
+        return 'list_movies.json?order_by=desc&limit=10';
+
+      default:
+        return 'list_movies.json?order_by=desc&limit=10';
+    }
+  }
+}
+
+enum MovieCategoryOption { allMovies, threeDMovie, horror, action, comedy }
+
+extension CategoryType on MovieCategoryOption {
   String get movieCategoryType {
     switch (this) {
       case MovieCategoryOption.allMovies:
@@ -27,11 +44,30 @@ extension Type on MovieCategoryOption {
       case MovieCategoryOption.comedy:
         return 'Comedy';
 
-      case MovieCategoryOption.drama:
-        return 'Drama';
-
       default:
         return 'All Movies';
+    }
+  }
+
+  String get categoryUrl {
+    switch (this) {
+      case MovieCategoryOption.allMovies:
+        return 'list_movies.json?limit=10';
+
+      case MovieCategoryOption.threeDMovie:
+        return 'list_movies.json?quality=3D';
+
+      case MovieCategoryOption.horror:
+        return 'list_movies.json?genre=horror&limit=10';
+
+      case MovieCategoryOption.action:
+        return 'list_movies.json?genre=action&limit=10';
+
+      case MovieCategoryOption.comedy:
+        return 'list_movies.json?genre=comdey&limit=10';
+
+      default:
+        return 'list_movies.json?limit=10';
     }
   }
 }
